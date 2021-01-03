@@ -1,5 +1,7 @@
 import java.util.ArrayList;
-
+/**
+ * @Author: Alex Cameron
+ */
 public class PlannerModel {
 
     private ArrayList<Integer> priorities;

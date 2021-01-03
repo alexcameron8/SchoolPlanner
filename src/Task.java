@@ -2,6 +2,8 @@ import java.util.Date;
 
 /**
  * This class represents a possible Task that can be entered into the planner.
+ *
+ * @Author: Alex Cameron
  */
 public class Task {
     private String desc, course;

@@ -1,5 +1,7 @@
 import javax.swing.*;
-
+/**
+ * @Author: Alex Cameron
+ */
 public class MenuBarView extends JMenuBar {
     public MenuBarView(PlannerModel plannerModel, PlannerView plannerView){
         super();

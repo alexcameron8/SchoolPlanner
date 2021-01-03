@@ -10,6 +10,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * @Author: Alex Cameron
+ */
 public class PlannerView extends JFrame {
 
     private PlannerModel plannerModel;
