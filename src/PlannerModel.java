@@ -6,6 +6,7 @@ public class PlannerModel {
 
     private ArrayList<Integer> priorities;
     private ArrayList<String> courses;
+    private ArrayList<Task> tasks;
 
     public PlannerModel(){
         courses = new ArrayList<>();
@@ -13,6 +14,7 @@ public class PlannerModel {
         priorities = new ArrayList<>();
         addPriority();
     }
+
     public void addCourses(){
         //Currently these will need to be updated manually, however I deem this easier than manually entering in course names each task entry
         courses.add("SYSC4001");
@@ -33,4 +35,5 @@ public class PlannerModel {
     public ArrayList<String> getCourses(){
         return courses;
     }
+    public ArrayList<Task> getTasks(){ return tasks;}
 }

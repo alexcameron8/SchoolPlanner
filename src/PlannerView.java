@@ -16,6 +16,12 @@ import java.util.Properties;
 public class PlannerView extends JFrame {
 
     private PlannerModel plannerModel;
+    private JDatePickerImpl datePicker;
+    private PlannerController pbc;
+    private JPanel taskPanel, currentTask;
+    private JList<Task> listTasks;
+    DefaultListModel<Task> modelTasks;
+
 
     public PlannerView(){
         super("School Planner");
@@ -24,12 +30,17 @@ public class PlannerView extends JFrame {
 
         this.getContentPane().setLayout(new BorderLayout());
 
+        pbc = new PlannerController(plannerModel,this);
+        this.modelTasks =new DefaultListModel<>();
+
         setupView();
 
         setupFields();
 
+        displayTaskList();
+
         this.setVisible(true);
-        this.setSize(500,500);
+        this.setSize(700,700);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -44,10 +55,18 @@ public class PlannerView extends JFrame {
         newTask.setFocusPainted(false);
         taskBar.add(newTask);
         this.add(taskBar, BorderLayout.PAGE_START);
+        //Adding Action Listener for new task JButton
+        newTask.addActionListener(pbc);
+        newTask.setActionCommand("newTask");
     }
 
     public void setupFields(){
-        JPanel taskPanel = new JPanel();
+        if(taskPanel!=null){
+            taskPanel.setVisible(false);
+            currentTask.setVisible(false);
+        }
+        taskView();
+        taskPanel = new JPanel();
         //Course setup
         JPanel coursePanel = new JPanel();
         JLabel selectCourse = new JLabel("Select Course");
@@ -75,7 +94,7 @@ public class PlannerView extends JFrame {
         //Description Setup
         JPanel descPanel = new JPanel();
         JLabel descLabel = new JLabel("Description of Task: ");
-        JTextArea descField = new JTextArea();
+        JTextArea descField = new JTextArea(1,25);
         descPanel.add(descLabel);
         descPanel.add(descField);
 
@@ -90,18 +109,60 @@ public class PlannerView extends JFrame {
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         JDatePanelImpl datePanel = new JDatePanelImpl(model,p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         dueDatePanel.add(dueDateLabel);
         dueDatePanel.add(datePicker);
+
+        //Submit Task button
+        JButton submitTask = new JButton("Submit Task");
+        submitTask.setFocusPainted(false);
 
         taskPanel.add(descPanel);
         taskPanel.add(coursePanel);
         taskPanel.add(priorityPanel);
         taskPanel.add(dueDatePanel);
+        taskPanel.add(submitTask);
+
+
+        //Adding ActionListeners
+        //Submit JButton
+        submitTask.addActionListener(pbc);
+        submitTask.setActionCommand("submit");
 
         this.add(taskPanel);
     }
 
+    public void displayTaskList(){
+        JPanel taskListPanel = new JPanel();
+        JLabel listTasksLabel = new JLabel("List of Tasks:");
+        listTasks = new JList<>(modelTasks);
+        listTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        taskListPanel.add(listTasksLabel);
+        taskListPanel.add(listTasks);
+        this.add(taskListPanel,BorderLayout.EAST);
+
+    }
+
+    public JDatePickerImpl getJDatePicker(){
+        return datePicker;
+    }
+
+    public void taskView(){
+        currentTask = new JPanel();
+        JLabel taskCourseLabel = new JLabel("Course: " );
+        JLabel taskNameLabel = new JLabel("Name: " );
+        JLabel taskDescLabel = new JLabel("Description: " );
+        JLabel taskPriority = new JLabel("Priority: " );
+        JLabel taskDateLabel = new JLabel("Date: " );
+
+        currentTask.add(taskCourseLabel);
+        currentTask.add(taskNameLabel);
+        currentTask.add(taskDescLabel);
+        currentTask.add(taskPriority);
+        currentTask.add(taskDateLabel);
+        this.add(currentTask,BorderLayout.PAGE_END);
+    }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
 

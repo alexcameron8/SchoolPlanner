@@ -6,15 +6,16 @@ import java.util.Date;
  * @Author: Alex Cameron
  */
 public class Task {
-    private String desc, course;
+    private String desc, course, name;
     private Date dueDate;
     private int priority;
 
-    public Task(String desc, String course, Date dueDate, int priority) {
+    public Task(String name, String desc, String course, Date dueDate, int priority) {
         this.dueDate = dueDate;
         this.course = course;
         this.desc = desc;
         this.priority = priority;
+        this.name = name;
     }
     public Date getDueDate(){
         return dueDate;
@@ -27,5 +28,8 @@ public class Task {
     }
     public String getCourse() {
         return course;
+    }
+    public String getTaskName(){
+        return name;
     }
 }
