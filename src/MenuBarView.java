@@ -3,18 +3,32 @@ import javax.swing.*;
  * @Author: Alex Cameron
  */
 public class MenuBarView extends JMenuBar {
+
+    private PlannerController pbc;
+
     public MenuBarView(PlannerModel plannerModel, PlannerView plannerView){
         super();
+        pbc = new PlannerController(plannerModel,plannerView);
         initMenu();
     }
     public void initMenu(){
         //Creating the JMenus
-        JMenu test = new JMenu("Test");
+        JMenu fileMenu = new JMenu("File Menu");
 
-        this.add(test);
+        this.add(fileMenu);
 
-        JMenuItem testItem = new JMenuItem("TestItem");
+        JMenuItem exportItem = new JMenuItem("Export ");
+        JMenuItem deleteFile = new JMenuItem("Delete File");
 
-        test.add(testItem);
+        fileMenu.add(exportItem);
+        fileMenu.add(deleteFile);
+
+
+        exportItem.addActionListener(pbc);
+        exportItem.setActionCommand("export");
+
+        deleteFile.addActionListener(pbc);
+        deleteFile.setActionCommand("deleteFile");
+
     }
 }
