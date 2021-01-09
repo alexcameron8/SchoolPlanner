@@ -7,6 +7,7 @@ import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -23,7 +24,6 @@ public class PlannerView extends JFrame {
     private JComboBox<Integer> priorities;
     private JComboBox<String> courses;
     private JTextArea nameField, descField;
-
 
     public PlannerView(){
         super("School Planner");
@@ -144,23 +144,69 @@ public class PlannerView extends JFrame {
 
     public void displayTaskList(){
         JPanel taskListPanel = new JPanel();
+        taskListPanel.setLayout(new BoxLayout(taskListPanel,BoxLayout.PAGE_AXIS));
         JLabel listTasksLabel = new JLabel("List of Tasks:");
+        JButton removeTaskButton = new JButton("Remove Selected Task");
+        removeTaskButton.setFocusPainted(false);
+
         listTasks = new JList<>(modelTasks);
         listTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         taskListPanel.add(listTasksLabel);
         taskListPanel.add(listTasks);
+        taskListPanel.add(removeTaskButton);
         this.add(taskListPanel,BorderLayout.EAST);
-
+        //ActionListener for task removal button
+        removeTaskButton.addActionListener(pbc);
+        removeTaskButton.setActionCommand("removeTask");
     }
-    public void addTask(String name, String desc, String course, JDatePickerImpl dueDate, int priority){
+    public void addTask(String name, String desc, String course, Date dueDate, int priority){
         Task task = new Task(name,desc,course,dueDate,priority);
         plannerModel.addTask(task);
         modelTasks.addElement(task);
     }
 
-    public JDatePickerImpl getJDatePicker(){
-        return datePicker;
+    public void removeTask(){
+        Task task = listTasks.getSelectedValue();
+        if(task!=null){
+            modelTasks.remove(listTasks.getSelectedIndex());
+            plannerModel.removeTask(task);
+        }
+
+    }
+
+    //come back to after if you want to add pop up of whether to merge the tasks with whatever is already in model tasks
+    public void mergeList(){
+
+    }
+    public void removeAllTasks(){
+        if(modelTasks.size()>0){
+            for(int i=0;i<modelTasks.size();i++){
+                modelTasks.removeElementAt(i);
+            }
+            System.out.println("Removing all tasks");
+        }
+    }
+    //used for importing eventually add an argument of boolean true if merged and false no merge
+    public void addAllTasks(){
+        for(Task tasks : plannerModel.getTasks()){
+            modelTasks.addElement(tasks);
+        }
+    }
+
+    public void test(){
+        System.out.println("ArrayList elements");
+        for(Task tasks : plannerModel.getTasks()){
+            System.out.println(tasks);
+        }
+        System.out.println("Model Elements");
+        for(int i=0;i<modelTasks.size();i++){
+            System.out.println(modelTasks.get(i));
+        }
+    }
+
+    public Date getDate() throws ParseException {
+        return new SimpleDateFormat("yyyy-MM-dd").parse(datePicker.getJFormattedTextField().getText());
     }
     public int getPriority(){
         return Integer.valueOf((Integer) priorities.getSelectedItem());

@@ -13,19 +13,32 @@ public class MenuBarView extends JMenuBar {
     }
     public void initMenu(){
         //Creating the JMenus
-        JMenu fileMenu = new JMenu("File Menu");
+        JMenu fileMenu = new JMenu("File");
 
         this.add(fileMenu);
 
-        JMenuItem exportItem = new JMenuItem("Export ");
+        JMenuItem exportFile = new JMenuItem("Export");
+        JMenuItem importFile = new JMenuItem("Import");
         JMenuItem deleteFile = new JMenuItem("Delete File");
 
-        fileMenu.add(exportItem);
+        //DELETE LATER ONLY FOR TESTING
+        JMenuItem testMenu = new JMenu("Test Menu");
+        this.add(testMenu);
+        JMenuItem testing = new JMenuItem("test");
+        testMenu.add(testing);
+        testing.addActionListener(pbc);
+        testing.setActionCommand("test");
+
+        fileMenu.add(exportFile);
+        fileMenu.add(importFile);
         fileMenu.add(deleteFile);
+        //
 
+        exportFile.addActionListener(pbc);
+        exportFile.setActionCommand("export");
 
-        exportItem.addActionListener(pbc);
-        exportItem.setActionCommand("export");
+        importFile.addActionListener(pbc);
+        importFile.setActionCommand("import");
 
         deleteFile.addActionListener(pbc);
         deleteFile.setActionCommand("deleteFile");

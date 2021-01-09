@@ -1,8 +1,7 @@
 import org.jdatepicker.impl.JDatePickerImpl;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -40,6 +39,12 @@ public class PlannerModel {
     public void addTask(Task task){
         tasks.add(task);
     }
+    public void removeTask(Task task){
+        tasks.remove(task);
+    }
+    public void removeAllTasks(){
+        tasks.clear();
+    }
 
     public String serialize(){
         String s = "";
@@ -55,6 +60,21 @@ public class PlannerModel {
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public void importFile(String fileName){
+        try{
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            String lines = bufferedReader.readLine();
+            while(lines !=null){
+                Task newTask = Task.importTask(lines);
+                addTask(newTask);
+                lines = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            System.out.println("The file "+ fileName + " cannot be found.");
         }
     }
 
