@@ -7,7 +7,6 @@ import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -20,7 +19,10 @@ public class PlannerView extends JFrame {
     private PlannerController pbc;
     private JPanel taskPanel, currentTask;
     private JList<Task> listTasks;
-    DefaultListModel<Task> modelTasks;
+    private DefaultListModel<Task> modelTasks;
+    private JComboBox<Integer> priorities;
+    private JComboBox<String> courses;
+    private JTextArea nameField, descField;
 
 
     public PlannerView(){
@@ -70,7 +72,7 @@ public class PlannerView extends JFrame {
         //Course setup
         JPanel coursePanel = new JPanel();
         JLabel selectCourse = new JLabel("Select Course");
-        JComboBox courses = new JComboBox<String>();
+        courses = new JComboBox<String>();
 
         for(int i=0; i<plannerModel.getCourses().size();i++){
             courses.addItem(plannerModel.getCourses().get(i));
@@ -82,7 +84,7 @@ public class PlannerView extends JFrame {
         //Priority setup
         JPanel priorityPanel = new JPanel();
         JLabel priorityLevel = new JLabel("Select Priority");
-        JComboBox priorities = new JComboBox<Integer>();
+        priorities = new JComboBox<Integer>();
 
         //populate priorities JComboBox
         for(int i=0; i<plannerModel.getPriorities().size();i++){
@@ -91,10 +93,17 @@ public class PlannerView extends JFrame {
         priorityPanel.add(priorityLevel);
         priorityPanel.add(priorities);
 
+        //Name Setup
+        JPanel namePanel = new JPanel();
+        JLabel nameLabel = new JLabel("Name of Task: ");
+        nameField = new JTextArea(1,15);
+        namePanel.add(nameLabel);
+        namePanel.add(nameField);
+
         //Description Setup
         JPanel descPanel = new JPanel();
         JLabel descLabel = new JLabel("Description of Task: ");
-        JTextArea descField = new JTextArea(1,25);
+        descField = new JTextArea(1,25);
         descPanel.add(descLabel);
         descPanel.add(descField);
 
@@ -117,6 +126,7 @@ public class PlannerView extends JFrame {
         JButton submitTask = new JButton("Submit Task");
         submitTask.setFocusPainted(false);
 
+        taskPanel.add(namePanel);
         taskPanel.add(descPanel);
         taskPanel.add(coursePanel);
         taskPanel.add(priorityPanel);
@@ -143,10 +153,28 @@ public class PlannerView extends JFrame {
         this.add(taskListPanel,BorderLayout.EAST);
 
     }
+    public void addTask(String name, String desc, String course, JDatePickerImpl dueDate, int priority){
+        Task task = new Task(name,desc,course,dueDate,priority);
+        plannerModel.addTask(task);
+        modelTasks.addElement(task);
+    }
 
     public JDatePickerImpl getJDatePicker(){
         return datePicker;
     }
+    public int getPriority(){
+        return Integer.valueOf((Integer) priorities.getSelectedItem());
+    }
+    public String getCourse(){
+        return String.valueOf(courses.getSelectedItem());
+    }
+    public String getTaskName(){
+        return nameField.getText();
+    }
+    public String getDesc(){
+        return descField.getText();
+    }
+
 
     public void taskView(){
         currentTask = new JPanel();

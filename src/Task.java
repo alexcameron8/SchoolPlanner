@@ -1,3 +1,5 @@
+import org.jdatepicker.impl.JDatePickerImpl;
+
 import java.util.Date;
 
 /**
@@ -7,17 +9,17 @@ import java.util.Date;
  */
 public class Task {
     private String desc, course, name;
-    private Date dueDate;
+    private JDatePickerImpl dueDate;
     private int priority;
 
-    public Task(String name, String desc, String course, Date dueDate, int priority) {
+    public Task(String name, String desc, String course, JDatePickerImpl dueDate, int priority) {
         this.dueDate = dueDate;
         this.course = course;
         this.desc = desc;
         this.priority = priority;
         this.name = name;
     }
-    public Date getDueDate(){
+    public JDatePickerImpl getDueDate(){
         return dueDate;
     }
     public int getPriority() {
@@ -31,5 +33,16 @@ public class Task {
     }
     public String getTaskName(){
         return name;
+    }
+    public String serialize(){
+        return name + "#" + desc + "#" + priority + "#" + dueDate + "#" + course;
+    }
+    public String toXML(){
+        return "<" + course +">" + course + "</" + course +">" + "< Task desc:" + desc +">" + course + "</Task>";
+    }
+
+    @Override
+    public String toString(){
+        return course+ ": " + name + " - " + dueDate.getJFormattedTextField().getText();
     }
 }
