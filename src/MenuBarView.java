@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  * @Author: Alex Cameron
  */
@@ -36,9 +38,14 @@ public class MenuBarView extends JMenuBar {
 
         exportFile.addActionListener(pbc);
         exportFile.setActionCommand("export");
-
-        importFile.addActionListener(pbc);
-        importFile.setActionCommand("import");
+        //fix this
+        importFile.addActionListener((e) -> {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Risk Game Saves", "rgd");
+            fileChooser.setFileFilter(filter);
+            fileChooser.addActionListener(pbc);
+            fileChooser.showOpenDialog(this);
+        });
 
         deleteFile.addActionListener(pbc);
         deleteFile.setActionCommand("deleteFile");

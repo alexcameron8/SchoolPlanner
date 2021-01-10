@@ -3,7 +3,12 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,7 +23,7 @@ public class PlannerView extends JFrame {
     private PlannerModel plannerModel;
     private JDatePickerImpl datePicker;
     private PlannerController pbc;
-    private JPanel taskPanel, currentTask;
+    private JPanel taskPanel, currentTask, centerPanel;
     private JList<Task> listTasks;
     private DefaultListModel<Task> modelTasks;
     private JComboBox<Integer> priorities;
@@ -29,7 +34,6 @@ public class PlannerView extends JFrame {
         super("School Planner");
 
         this.plannerModel = new PlannerModel();
-
         this.getContentPane().setLayout(new BorderLayout());
 
         pbc = new PlannerController(plannerModel,this);
@@ -41,6 +45,8 @@ public class PlannerView extends JFrame {
 
         displayTaskList();
 
+        this.pack();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.setSize(700,700);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -67,8 +73,10 @@ public class PlannerView extends JFrame {
             taskPanel.setVisible(false);
             currentTask.setVisible(false);
         }
-        taskView();
+        centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
         taskPanel = new JPanel();
+        taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         //Course setup
         JPanel coursePanel = new JPanel();
         JLabel selectCourse = new JLabel("Select Course");
@@ -81,7 +89,7 @@ public class PlannerView extends JFrame {
         coursePanel.add(courses);
 
 
-        //Priority setup
+        //priority setup
         JPanel priorityPanel = new JPanel();
         JLabel priorityLevel = new JLabel("Select Priority");
         priorities = new JComboBox<Integer>();
@@ -93,21 +101,10 @@ public class PlannerView extends JFrame {
         priorityPanel.add(priorityLevel);
         priorityPanel.add(priorities);
 
-        //Name Setup
-        JPanel namePanel = new JPanel();
-        JLabel nameLabel = new JLabel("Name of Task: ");
-        nameField = new JTextArea(1,15);
-        namePanel.add(nameLabel);
-        namePanel.add(nameField);
+        //setup areas for name and description
+        setupTextFields();
 
-        //Description Setup
-        JPanel descPanel = new JPanel();
-        JLabel descLabel = new JLabel("Description of Task: ");
-        descField = new JTextArea(1,25);
-        descPanel.add(descLabel);
-        descPanel.add(descField);
-
-        //Date setup
+        //date setup
         JPanel dueDatePanel = new JPanel();
         JLabel dueDateLabel = new JLabel("Select Due Date");
 
@@ -119,6 +116,7 @@ public class PlannerView extends JFrame {
         p.put("text.year", "Year");
         JDatePanelImpl datePanel = new JDatePanelImpl(model,p);
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker.setButtonFocusable(false);
         dueDatePanel.add(dueDateLabel);
         dueDatePanel.add(datePicker);
 
@@ -126,40 +124,146 @@ public class PlannerView extends JFrame {
         JButton submitTask = new JButton("Submit Task");
         submitTask.setFocusPainted(false);
 
-        taskPanel.add(namePanel);
-        taskPanel.add(descPanel);
         taskPanel.add(coursePanel);
         taskPanel.add(priorityPanel);
         taskPanel.add(dueDatePanel);
         taskPanel.add(submitTask);
 
+        centerPanel.add(taskPanel);
+        taskView();
+        this.add(centerPanel);
 
+        //Design
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        //taskPanel
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "New Task");
+        taskPanel.setBorder(new TitledBorder(title));
+        //Priority Panel
+        priorityPanel.setBackground(Color.lightGray);
+        priorityPanel.setBorder(border);
+
+        //coursePanel
+        coursePanel.setBackground(Color.lightGray);
+        coursePanel.setBorder(border);
+
+        //name & description field
+        nameField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        descField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         //Adding ActionListeners
         //Submit JButton
         submitTask.addActionListener(pbc);
         submitTask.setActionCommand("submit");
+    }
 
-        this.add(taskPanel);
+    public void setupTextFields(){
+        //Name Setup
+        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        nameField = new JTextArea(1,15);
+
+        nameField.addKeyListener(new KeyAdapter() {
+            @Override
+            /**
+             * This allows user to hit tab to focus to the next JTextArea field and not enter "useless" spaces in the field.
+             * Code used from:
+             * https://kodejava.org/how-do-i-move-focus-from-jtextarea-using-tab-key/
+             */
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getModifiersEx() > 0) {
+                        nameField.transferFocusBackward();
+                    } else {
+                        nameField.transferFocus();
+                    }
+                    e.consume();
+                }
+            }
+        });
+
+        namePanel.add(nameField);
+
+        //Description Setup
+        JPanel descPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        descField = new JTextArea(1,25);
+
+        descField.addKeyListener(new KeyAdapter() {
+            @Override
+            /**
+             * This allows user to hit tab to focus to the next JTextArea field and not enter "useless" spaces in the field.
+             * Code used from:
+             * https://kodejava.org/how-do-i-move-focus-from-jtextarea-using-tab-key/
+             */
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getModifiersEx() > 0) {
+                        descField.transferFocusBackward();
+                    } else {
+                        descField.transferFocus();
+                    }
+                    e.consume();
+                }
+            }
+        });
+
+        descPanel.add(descField);
+
+        taskPanel.add(namePanel);
+        taskPanel.add(descPanel);
+
+        //Design
+        TitledBorder nameTitle, descTitle;
+        nameTitle = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "Name of Task:");
+        namePanel.setBorder(nameTitle);
+
+        descTitle= BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "Description of Task:");
+        descPanel.setBorder(descTitle);
+
     }
 
     public void displayTaskList(){
         JPanel taskListPanel = new JPanel();
         taskListPanel.setLayout(new BoxLayout(taskListPanel,BoxLayout.PAGE_AXIS));
-        JLabel listTasksLabel = new JLabel("List of Tasks:");
         JButton removeTaskButton = new JButton("Remove Selected Task");
         removeTaskButton.setFocusPainted(false);
+        removeTaskButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
 
         listTasks = new JList<>(modelTasks);
         listTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        taskListPanel.add(listTasksLabel);
         taskListPanel.add(listTasks);
         taskListPanel.add(removeTaskButton);
-        this.add(taskListPanel,BorderLayout.EAST);
+        this.add(taskListPanel,BorderLayout.WEST);
+
+        //Design
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "List of Tasks");
+        taskListPanel.setBorder(new TitledBorder(title));
+
         //ActionListener for task removal button
         removeTaskButton.addActionListener(pbc);
         removeTaskButton.setActionCommand("removeTask");
+
+        //design
+        listTasks.setBackground(Color.lightGray);
+        removeTaskButton.setBackground(Color.WHITE);
     }
+
+    public void taskView(){
+        currentTask = new JPanel();
+        JLabel taskCourseLabel = new JLabel("Course: " );
+        JLabel taskNameLabel = new JLabel("Name: " );
+        JLabel taskDescLabel = new JLabel("Description: " );
+        JLabel taskPriority = new JLabel("Priority: " );
+        JLabel taskDateLabel = new JLabel("Date: " );
+
+        currentTask.add(taskCourseLabel);
+        currentTask.add(taskNameLabel);
+        currentTask.add(taskDescLabel);
+        currentTask.add(taskPriority);
+        currentTask.add(taskDateLabel);
+        centerPanel.add(currentTask);
+    }
+
     public void addTask(String name, String desc, String course, Date dueDate, int priority){
         Task task = new Task(name,desc,course,dueDate,priority);
         plannerModel.addTask(task);
@@ -175,22 +279,25 @@ public class PlannerView extends JFrame {
 
     }
 
-    //come back to after if you want to add pop up of whether to merge the tasks with whatever is already in model tasks
-    public void mergeList(){
-
-    }
     public void removeAllTasks(){
         if(modelTasks.size()>0){
-            for(int i=0;i<modelTasks.size();i++){
-                modelTasks.removeElementAt(i);
-            }
-            System.out.println("Removing all tasks");
+            modelTasks.removeAllElements();
+            System.out.println("REMOVEALL");
         }
     }
     //used for importing eventually add an argument of boolean true if merged and false no merge
     public void addAllTasks(){
+        boolean contains = false;
         for(Task tasks : plannerModel.getTasks()){
-            modelTasks.addElement(tasks);
+            for(int i = 0; i<modelTasks.size();i++){
+                if(modelTasks.getElementAt(i).getTaskName().equals(tasks.getTaskName())){
+                    contains=true;
+                }
+            }
+            if(!contains) {
+                modelTasks.addElement(tasks);
+            }
+            contains = false;
         }
     }
 
@@ -206,7 +313,11 @@ public class PlannerView extends JFrame {
     }
 
     public Date getDate() throws ParseException {
-        return new SimpleDateFormat("yyyy-MM-dd").parse(datePicker.getJFormattedTextField().getText());
+        if (datePicker.getJFormattedTextField().getText().equals("")) {
+            return null;
+        } else {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(datePicker.getJFormattedTextField().getText());
+        }
     }
     public int getPriority(){
         return Integer.valueOf((Integer) priorities.getSelectedItem());
@@ -219,23 +330,6 @@ public class PlannerView extends JFrame {
     }
     public String getDesc(){
         return descField.getText();
-    }
-
-
-    public void taskView(){
-        currentTask = new JPanel();
-        JLabel taskCourseLabel = new JLabel("Course: " );
-        JLabel taskNameLabel = new JLabel("Name: " );
-        JLabel taskDescLabel = new JLabel("Description: " );
-        JLabel taskPriority = new JLabel("Priority: " );
-        JLabel taskDateLabel = new JLabel("Date: " );
-
-        currentTask.add(taskCourseLabel);
-        currentTask.add(taskNameLabel);
-        currentTask.add(taskDescLabel);
-        currentTask.add(taskPriority);
-        currentTask.add(taskDateLabel);
-        this.add(currentTask,BorderLayout.PAGE_END);
     }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
