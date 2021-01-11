@@ -25,6 +25,7 @@ public class MenuBarView extends JMenuBar {
         JMenuItem importFile = new JMenuItem("Import");
         JMenuItem deleteFile = new JMenuItem("Delete File");
         JMenuItem exportListFile = new JMenuItem("Export List");
+        JMenuItem importListFile = new JMenuItem("Import List");
 
 
         //DELETE LATER ONLY FOR TESTING
@@ -46,6 +47,7 @@ public class MenuBarView extends JMenuBar {
         fileMenu.add(deleteFile);
 
         fileListMenu.add(exportListFile);
+        fileListMenu.add(importListFile);
 
         exportFile.addActionListener(pbc);
         exportFile.setActionCommand("export");
@@ -55,6 +57,9 @@ public class MenuBarView extends JMenuBar {
 
         exportListFile.addActionListener(pbc);
         exportListFile.setActionCommand("exportList");
+
+        importListFile.addActionListener(pbc);
+        importListFile.setActionCommand("importList");
        /**
         //fix this
         importFile.addActionListener((e) -> {

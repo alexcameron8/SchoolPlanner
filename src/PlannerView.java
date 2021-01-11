@@ -29,6 +29,7 @@ public class PlannerView extends JFrame {
     private JComboBox<Integer> priorities;
     private JComboBox<String> courses;
     private JTextArea nameField, descField;
+    private JLabel taskCourseLabel,taskNameLabel,taskDescLabel,taskPriorityLabel, taskDateLabel;
 
     public PlannerView(){
         super("School Planner");
@@ -61,11 +62,35 @@ public class PlannerView extends JFrame {
         JPanel taskBar = new JPanel();
         JButton newTask = new JButton("New Task");
         newTask.setFocusPainted(false);
+        JButton removeTaskButton = new JButton("Remove Selected Task");
+        removeTaskButton.setFocusPainted(false);
+        removeTaskButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
+        //Submit Task button
+        JButton submitTask = new JButton("Submit Task");
+        submitTask.setFocusPainted(false);
+
+
         taskBar.add(newTask);
+        taskBar.add(removeTaskButton);
+        taskBar.add(submitTask);
         this.add(taskBar, BorderLayout.PAGE_START);
         //Adding Action Listener for new task JButton
         newTask.addActionListener(pbc);
         newTask.setActionCommand("newTask");
+
+        //ActionListener for task removal button
+        removeTaskButton.addActionListener(pbc);
+        removeTaskButton.setActionCommand("removeTask");
+
+        //Submit JButton
+        submitTask.addActionListener(pbc);
+        submitTask.setActionCommand("submit");
+
+        //Design
+        newTask.setBackground(Color.WHITE);
+        removeTaskButton.setBackground(Color.WHITE);
+        submitTask.setBackground(Color.WHITE);
+
     }
 
     public void setupFields(){
@@ -120,14 +145,9 @@ public class PlannerView extends JFrame {
         dueDatePanel.add(dueDateLabel);
         dueDatePanel.add(datePicker);
 
-        //Submit Task button
-        JButton submitTask = new JButton("Submit Task");
-        submitTask.setFocusPainted(false);
-
         taskPanel.add(coursePanel);
         taskPanel.add(priorityPanel);
         taskPanel.add(dueDatePanel);
-        taskPanel.add(submitTask);
 
         centerPanel.add(taskPanel);
         taskView();
@@ -151,9 +171,6 @@ public class PlannerView extends JFrame {
         nameField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         descField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         //Adding ActionListeners
-        //Submit JButton
-        submitTask.addActionListener(pbc);
-        submitTask.setActionCommand("submit");
     }
 
     public void setupTextFields(){
@@ -223,15 +240,11 @@ public class PlannerView extends JFrame {
     public void displayTaskList(){
         JPanel taskListPanel = new JPanel();
         taskListPanel.setLayout(new BoxLayout(taskListPanel,BoxLayout.PAGE_AXIS));
-        JButton removeTaskButton = new JButton("Remove Selected Task");
-        removeTaskButton.setFocusPainted(false);
-        removeTaskButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
 
         listTasks = new JList<>(modelTasks);
         listTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         taskListPanel.add(listTasks);
-        taskListPanel.add(removeTaskButton);
         this.add(taskListPanel, BorderLayout.WEST);
 
         //Design
@@ -239,30 +252,40 @@ public class PlannerView extends JFrame {
         title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "List of Tasks");
         taskListPanel.setBorder(new TitledBorder(title));
 
-        //ActionListener for task removal button
-        removeTaskButton.addActionListener(pbc);
-        removeTaskButton.setActionCommand("removeTask");
-
         //design
         listTasks.setBackground(Color.lightGray);
-        removeTaskButton.setBackground(Color.WHITE);
+
+        //Selection Listener
+        listTasks.addListSelectionListener(pbc);
     }
 
     public void taskView(){
         currentTask = new JPanel();
         currentTask.setLayout(new BoxLayout(currentTask,BoxLayout.PAGE_AXIS));
-        JLabel taskCourseLabel = new JLabel("Course: " );
-        JLabel taskNameLabel = new JLabel("Name: " );
-        JLabel taskDescLabel = new JLabel("Description: " );
-        JLabel taskPriority = new JLabel("Priority: " );
-        JLabel taskDateLabel = new JLabel("Date: " );
+        taskCourseLabel = new JLabel("Course: " );
+        taskNameLabel = new JLabel("Name: " );
+        taskDescLabel = new JLabel("Description: " );
+        taskPriorityLabel = new JLabel("Priority:  " );
+        taskDateLabel = new JLabel("Date: " );
 
         currentTask.add(taskCourseLabel);
         currentTask.add(taskNameLabel);
         currentTask.add(taskDescLabel);
-        currentTask.add(taskPriority);
+        currentTask.add(taskPriorityLabel);
         currentTask.add(taskDateLabel);
         centerPanel.add(currentTask);
+
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "Task Description");
+        currentTask.setBorder(new TitledBorder(title));
+    }
+
+    public void setTaskLabel(String name,String course, String desc, String priority, String date){
+        taskCourseLabel.setText("Course: "+ course);
+        taskDateLabel.setText("Due Date: "+ date);
+        taskDescLabel.setText("Description: "+ desc);
+        taskNameLabel.setText("Name: "+ name);
+        taskPriorityLabel.setText("Priority:" + priority);
     }
 
     public void addTask(String name, String desc, String course, Date dueDate, int priority){
@@ -331,6 +354,10 @@ public class PlannerView extends JFrame {
     }
     public String getDesc(){
         return descField.getText();
+    }
+
+    public JList<Task> getListTasks(){
+        return listTasks;
     }
 
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {

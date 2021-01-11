@@ -1,4 +1,6 @@
 import org.jdatepicker.impl.JDatePickerImpl;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,10 +51,19 @@ public class Task {
             return "High";
         }
     }
+    public static int priorityToInt(String priority){
+        if(priority.equals("Low")){
+            return 1;
+        }else if(priority.equals("Medium")){
+            return 2;
+        }else{
+            return 3;
+        }
+    }
+
     public String dateFormatted(){
         return new SimpleDateFormat("EEE d MMM").format(dueDate);
     }
-
     public static Task importTask(String task) throws ParseException {
 
         String[] info = task.split("#");
@@ -69,13 +80,38 @@ public class Task {
         return name + "#" + desc + "#" + course + "#" + new SimpleDateFormat("MM-dd-yyyy").format(dueDate) + "#" + priority;
     }
     public String toXML(){
-        String s = "<Course>" + course + "</Course>\n" + "     <Task name:" + name + " priority:" + priorityToString(priority) + ">";
-        if(desc.isEmpty()){
-            s +="</Task>\n";
-        }else{
-            s+="\n"+ desc + "\n</Task>\n";
+        String s = "<Task>\n\t<Course>" + course + "</Course>\n\t<Date>" + dateFormatted() +"</Date>\n \t<Name>" + name + "</Name>\n\t<Priority>" + priorityToString(priority) + "</Priority>\n";
+        if(!desc.isEmpty()){
+            s+="\t<Description>\n\t\t"+ desc + "\n\t</Description>\n";
         }
+        s+= "</Task>\n";
         return s;
+    }
+
+    public static Task newTaskFromElement(Element node) throws ParseException {
+        NodeList nodeList;
+        String name ="";
+        String desc = "";
+        String course = "";
+        int priority = 0;
+        Date dueDate = null;
+        if(node.getElementsByTagName("Name").getLength()>0){
+            name = node.getElementsByTagName("Name").item(0).getTextContent();
+        }
+        if(node.getElementsByTagName("Description").getLength()>0){
+            desc = node.getElementsByTagName("Description").item(0).getTextContent();
+        }
+        if(node.getElementsByTagName("Course").getLength()>0){
+            course = node.getElementsByTagName("Course").item(0).getTextContent();
+        }
+        if(node.getElementsByTagName("Priority").getLength()>0){
+            priority = priorityToInt(node.getElementsByTagName("Priority").item(0).getTextContent());
+        }
+        if(node.getElementsByTagName("Date").getLength()>0){
+            dueDate = new SimpleDateFormat("EEE d MMM").parse(node.getElementsByTagName("Date").item(0).getTextContent());
+        }
+
+        return new Task(name,desc,course,dueDate,priority);
     }
 
     @Override
