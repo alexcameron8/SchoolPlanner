@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.Flow;
 
 /**
  * @Author: Alex Cameron
@@ -38,7 +39,7 @@ public class PlannerView extends JFrame {
         this.getContentPane().setLayout(new BorderLayout());
 
         pbc = new PlannerController(plannerModel,this);
-        this.modelTasks =new DefaultListModel<>();
+        this.modelTasks = new DefaultListModel<>();
 
         setupView();
 
@@ -49,7 +50,7 @@ public class PlannerView extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        this.setSize(700,700);
+        this.setSize(900,700);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -99,11 +100,12 @@ public class PlannerView extends JFrame {
             centerPanel.setVisible(false);
         }
         centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
+        centerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         taskPanel = new JPanel();
-        taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        taskPanel.setLayout(new BoxLayout(taskPanel,BoxLayout.PAGE_AXIS));
         //Course setup
         JPanel coursePanel = new JPanel();
+        coursePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel selectCourse = new JLabel("Select Course");
         courses = new JComboBox<String>();
 
@@ -116,6 +118,7 @@ public class PlannerView extends JFrame {
 
         //priority setup
         JPanel priorityPanel = new JPanel();
+        priorityPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel priorityLevel = new JLabel("Select Priority");
         priorities = new JComboBox<Integer>();
 
@@ -145,32 +148,39 @@ public class PlannerView extends JFrame {
         dueDatePanel.add(dueDateLabel);
         dueDatePanel.add(datePicker);
 
+        taskPanel.add(Box.createRigidArea(new Dimension(0,10)));
         taskPanel.add(coursePanel);
+        taskPanel.add(Box.createRigidArea(new Dimension(0,10)));
         taskPanel.add(priorityPanel);
+        taskPanel.add(Box.createRigidArea(new Dimension(10,10)));
         taskPanel.add(dueDatePanel);
-
+        taskPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        centerPanel.add(Box.createHorizontalStrut(10));
         centerPanel.add(taskPanel);
-        taskView();
         this.add(centerPanel);
 
         //Design
-        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        Border border = BorderFactory.createEtchedBorder(1);
         //taskPanel
         TitledBorder title;
         title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "New Task");
+        title.setTitleJustification(3);
         taskPanel.setBorder(new TitledBorder(title));
         //Priority Panel
-        priorityPanel.setBackground(Color.lightGray);
         priorityPanel.setBorder(border);
 
         //coursePanel
-        coursePanel.setBackground(Color.lightGray);
         coursePanel.setBorder(border);
 
         //name & description field
         nameField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         descField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        //Adding ActionListeners
+
+        courses.setBackground(Color.white);
+        priorities.setBackground(Color.white);
+        datePicker.setBackground(Color.WHITE);
+        dueDatePanel.setBorder(border);
+
     }
 
     public void setupTextFields(){
@@ -234,17 +244,15 @@ public class PlannerView extends JFrame {
 
         descTitle= BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "Description of Task:");
         descPanel.setBorder(descTitle);
-
     }
 
     public void displayTaskList(){
         JPanel taskListPanel = new JPanel();
-        taskListPanel.setLayout(new BoxLayout(taskListPanel,BoxLayout.PAGE_AXIS));
 
         listTasks = new JList<>(modelTasks);
         listTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        taskListPanel.add(listTasks);
+        taskListPanel.add(new JScrollPane(listTasks));
         this.add(taskListPanel, BorderLayout.WEST);
 
         //Design
@@ -252,16 +260,13 @@ public class PlannerView extends JFrame {
         title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "List of Tasks");
         taskListPanel.setBorder(new TitledBorder(title));
 
-        //design
-        listTasks.setBackground(Color.lightGray);
-
         //Selection Listener
         listTasks.addListSelectionListener(pbc);
     }
 
     public void taskView(){
         currentTask = new JPanel();
-        currentTask.setLayout(new BoxLayout(currentTask,BoxLayout.PAGE_AXIS));
+        currentTask.setLayout(new BoxLayout(currentTask,BoxLayout.Y_AXIS));
         taskCourseLabel = new JLabel("Course: " );
         taskNameLabel = new JLabel("Name: " );
         taskDescLabel = new JLabel("Description: " );
@@ -273,11 +278,15 @@ public class PlannerView extends JFrame {
         currentTask.add(taskDescLabel);
         currentTask.add(taskPriorityLabel);
         currentTask.add(taskDateLabel);
-        centerPanel.add(currentTask);
+        this.add(currentTask,BorderLayout.EAST);
 
         TitledBorder title;
         title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(1), "Task Description");
         currentTask.setBorder(new TitledBorder(title));
+    }
+
+    public JPanel getCurrentTaskPanel(){
+        return currentTask;
     }
 
     public void setTaskLabel(String name,String course, String desc, String priority, String date){

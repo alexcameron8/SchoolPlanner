@@ -27,21 +27,6 @@ public class MenuBarView extends JMenuBar {
         JMenuItem exportListFile = new JMenuItem("Export List");
         JMenuItem importListFile = new JMenuItem("Import List");
 
-
-        //DELETE LATER ONLY FOR TESTING
-        JMenuItem testMenu = new JMenu("Test Menu");
-        this.add(testMenu);
-        JMenuItem testing = new JMenuItem("test");
-        JMenuItem sorting = new JMenuItem("sort");
-        testMenu.add(testing);
-        testMenu.add(sorting);
-
-        testing.addActionListener(pbc);
-        testing.setActionCommand("test");
-        sorting.addActionListener(pbc);
-        sorting.setActionCommand("sort");
-        //
-
         fileMenu.add(exportFile);
         fileMenu.add(importFile);
         fileMenu.add(deleteFile);

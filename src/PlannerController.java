@@ -82,26 +82,25 @@ public class PlannerController implements ActionListener, ListSelectionListener 
                 plannerModel.importList(fileName);
                 plannerView.addAllTasks();
             } catch (ParserConfigurationException | IOException | SAXException | ParseException parserConfigurationException) {
-                parserConfigurationException.printStackTrace();
+                JOptionPane.showMessageDialog(null,"This file cannot be read or imported.");
             }
-        }
-        else if(e.getActionCommand().equals("test")){
-            plannerView.test();
-        }
-        else if(e.getActionCommand().equals("sort")){
-            plannerModel.lowestDate(plannerModel.getTasks());
         }
     }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            String name = plannerView.getListTasks().getSelectedValue().getTaskName();
-            String course = plannerView.getListTasks().getSelectedValue().getCourse();
-            String desc = plannerView.getListTasks().getSelectedValue().getDesc();
-            String priority = plannerView.getListTasks().getSelectedValue().priorityToString(plannerView.getListTasks().getSelectedValue().getPriority());
-            String date = plannerView.getListTasks().getSelectedValue().dateFormatted();
-            plannerView.setTaskLabel(name,course,desc,priority,date);
+            if(plannerView.getCurrentTaskPanel()==null){
+                plannerView.taskView();
+            }
+            if(plannerView.getListTasks().getSelectedValue()!=null) {
+                String name = plannerView.getListTasks().getSelectedValue().getTaskName();
+                String course = plannerView.getListTasks().getSelectedValue().getCourse();
+                String desc = plannerView.getListTasks().getSelectedValue().getDesc();
+                String priority = plannerView.getListTasks().getSelectedValue().priorityToString(plannerView.getListTasks().getSelectedValue().getPriority());
+                String date = plannerView.getListTasks().getSelectedValue().dateFormatted();
+                plannerView.setTaskLabel(name, course, desc, priority, date);
+            }
         }
     }
 }

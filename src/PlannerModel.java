@@ -131,7 +131,6 @@ public class PlannerModel {
                 temp = tasks.get(i);
             }
         }
-        System.out.println(temp.getDueDate());
         return temp;
     }
 
@@ -161,22 +160,4 @@ public class PlannerModel {
     }
     public ArrayList<Task> getTasks(){ return tasks;}
 
-    public static void main(String[] args) {
-        ArrayList<Integer> list1 = new ArrayList<>();
-        list1.add(1);
-        list1.add(2);
-        list1.add(3);
-
-
-        ArrayList<Integer> list2 = new ArrayList<>();
-
-        list2.add(2);
-        list2.add(3);
-
-        list1.removeAll(list2);
-        for(int i=0; i<list1.size();i++){
-            System.out.println(list1.toString());
-        }
-
-    }
 }
