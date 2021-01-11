@@ -3,7 +3,9 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Alex Cameron
@@ -77,7 +79,75 @@ public class PlannerModel {
             System.out.println("The file "+ fileName + " cannot be found.");
         }
     }
+    public void exportList(String fileName) throws IOException {
+        Task temp = null;
+        ArrayList<Task> taskList = tasks;
+        ArrayList<Task> tempList;
+        String s ="<School Planner>\n";
+        while(taskList.size()>0){
+            temp = lowestDate(tasks); //returns task with most recent due date
+            tempList = sameDate(taskList,temp.getDueDate());
+            s+= dateXML(tempList);
+            taskList.removeAll(tempList);
+        }
 
+        s+= "</School Planner>";
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+        bufferedWriter.write(s);
+        bufferedWriter.close();
+    }
+
+    public Task lowestDate(ArrayList<Task> tasks){
+        Task temp=null;
+        for(int i=0; i< tasks.size();i++){
+            if(i==0){
+                temp = tasks.get(i);
+            }else if(tasks.get(i).getDueDate().before(temp.getDueDate())){
+                temp = tasks.get(i);
+            }
+        }
+        System.out.println(temp.getDueDate());
+        return temp;
+    }
+
+    public ArrayList<Task> sameDate(ArrayList<Task> tasks, Date date ){
+        ArrayList<Task> commonTaskDueDates = new ArrayList<>();
+        for(Task task : tasks){
+            if(task.getDueDate().equals(date)){
+                commonTaskDueDates.add(task);
+            }
+        }
+        return commonTaskDueDates;
+    }
+    public String dateXML(ArrayList<Task> tasks){
+        String s = "<" + tasks.get(0).dateFormatted() + ">\n";
+        for(Task task : tasks){
+            s += task.toXML();
+        }
+        s += "</" + tasks.get(0).dateFormatted() + ">\n\n";
+        return s;
+    }
+
+    public <T extends Comparable<? super T>> void recursiveBubbleSortDate (List<Task> tasks,int n)
+    {
+        Task[] theArray = tasks.toArray(new Task[0]);
+
+        if(n == 1){ //Base case (final element of array)
+            for(int i=0;i<tasks.size();i++){
+                System.out.println(tasks.get(i).getTaskName() + "  "+ tasks.get(i).getDueDate());
+            }
+            return;
+        }
+        int currIndex = theArray.length - n; //recursively marks the index being checked each recursive call
+        if(theArray[currIndex].getDueDate().after(theArray[currIndex+1].getDueDate())){ //compares the 2 adjacent elements of the index
+            Task temp = theArray[currIndex]; //swaps the current index with the index ahead of curr
+            theArray[currIndex] = theArray[currIndex+1];
+            theArray[currIndex+1] = temp;
+        }
+
+        List<Task> orderedTasks = Arrays.asList(theArray);
+        recursiveBubbleSortDate(orderedTasks, n-1); //decreases the size by 1 each time moving to next element of array to sort
+    }
 
     public ArrayList<Integer> getPriorities(){
         return priorities;
@@ -86,4 +156,23 @@ public class PlannerModel {
         return courses;
     }
     public ArrayList<Task> getTasks(){ return tasks;}
+
+    public static void main(String[] args) {
+        ArrayList<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(2);
+        list1.add(3);
+
+
+        ArrayList<Integer> list2 = new ArrayList<>();
+
+        list2.add(2);
+        list2.add(3);
+
+        list1.removeAll(list2);
+        for(int i=0; i<list1.size();i++){
+            System.out.println(list1.toString());
+        }
+
+    }
 }

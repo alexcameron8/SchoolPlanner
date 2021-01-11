@@ -23,6 +23,7 @@ public class Task {
         this.priority = priority;
         this.name = name;
     }
+
     public Date getDueDate(){
         return dueDate;
     }
@@ -39,13 +40,26 @@ public class Task {
         return name;
     }
 
+    public String priorityToString(int priority){
+        if(priority==1){
+            return "Low";
+        }else if(priority==2){
+            return "Medium";
+        }else{
+            return "High";
+        }
+    }
+    public String dateFormatted(){
+        return new SimpleDateFormat("EEE d MMM").format(dueDate);
+    }
+
     public static Task importTask(String task) throws ParseException {
 
         String[] info = task.split("#");
         String name = info[0];
         String desc = info[1];
         String course = info[2];
-        Date dueDate = new SimpleDateFormat("yyyy-MM-dd").parse(info[3]);
+        Date dueDate = new SimpleDateFormat("MM-dd-yyyy").parse(info[3]);
         int priority = Integer.parseInt(info[4]);
 
         return new Task(name,desc,course,dueDate,priority);
@@ -55,7 +69,13 @@ public class Task {
         return name + "#" + desc + "#" + course + "#" + new SimpleDateFormat("MM-dd-yyyy").format(dueDate) + "#" + priority;
     }
     public String toXML(){
-        return "<" + course +">" + course + "</" + course +">" + "< Task desc:" + desc +">" + course + "</Task>";
+        String s = "<Course>" + course + "</Course>\n" + "     <Task name:" + name + " priority:" + priorityToString(priority) + ">";
+        if(desc.isEmpty()){
+            s +="</Task>\n";
+        }else{
+            s+="\n"+ desc + "\n</Task>\n";
+        }
+        return s;
     }
 
     @Override

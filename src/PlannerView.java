@@ -71,7 +71,7 @@ public class PlannerView extends JFrame {
     public void setupFields(){
         if(taskPanel!=null){
             taskPanel.setVisible(false);
-            currentTask.setVisible(false);
+            centerPanel.setVisible(false);
         }
         centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
@@ -232,7 +232,7 @@ public class PlannerView extends JFrame {
 
         taskListPanel.add(listTasks);
         taskListPanel.add(removeTaskButton);
-        this.add(taskListPanel,BorderLayout.WEST);
+        this.add(taskListPanel, BorderLayout.WEST);
 
         //Design
         TitledBorder title;
@@ -250,6 +250,7 @@ public class PlannerView extends JFrame {
 
     public void taskView(){
         currentTask = new JPanel();
+        currentTask.setLayout(new BoxLayout(currentTask,BoxLayout.PAGE_AXIS));
         JLabel taskCourseLabel = new JLabel("Course: " );
         JLabel taskNameLabel = new JLabel("Name: " );
         JLabel taskDescLabel = new JLabel("Description: " );

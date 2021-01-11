@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +54,6 @@ public class PlannerController implements ActionListener {
         else if(e.getActionCommand().equals("import")){
             String fileName = JOptionPane.showInputDialog(null, "Enter file name to import: ");
             plannerModel.importFile(fileName);
-            //plannerView.mergeList(); ADD LATER
             plannerView.removeAllTasks();
             plannerView.addAllTasks();
         }
@@ -62,8 +62,20 @@ public class PlannerController implements ActionListener {
             if(new File(fileName).delete()){
                 JOptionPane.showMessageDialog(null, "File '" + fileName + "' deleted");
             }
-        }else if(e.getActionCommand().equals("test")){
+        }
+        else if(e.getActionCommand().equals("exportList")){
+            String fileName = JOptionPane.showInputDialog(null, "Enter file name to export: ");
+            try {
+                plannerModel.exportList(fileName);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+        else if(e.getActionCommand().equals("test")){
             plannerView.test();
+        }
+        else if(e.getActionCommand().equals("sort")){
+            plannerModel.lowestDate(plannerModel.getTasks());
         }
     }
 }
