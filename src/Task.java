@@ -62,7 +62,7 @@ public class Task {
     }
 
     public String dateFormatted(){
-        return new SimpleDateFormat("EEE d MMM").format(dueDate);
+        return new SimpleDateFormat("EEE d MMM yyyy").format(dueDate);
     }
     public static Task importTask(String task) throws ParseException {
 
@@ -108,7 +108,7 @@ public class Task {
             priority = priorityToInt(node.getElementsByTagName("Priority").item(0).getTextContent());
         }
         if(node.getElementsByTagName("Date").getLength()>0){
-            dueDate = new SimpleDateFormat("EEE d MMM").parse(node.getElementsByTagName("Date").item(0).getTextContent());
+            dueDate = new SimpleDateFormat("EEE d MMM yyyy").parse(node.getElementsByTagName("Date").item(0).getTextContent());
         }
 
         return new Task(name,desc,course,dueDate,priority);

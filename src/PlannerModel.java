@@ -151,6 +151,16 @@ public class PlannerModel {
         return s;
     }
 
+    public void removeOldTasks(ArrayList<Task> tasks){
+        Date currentDate = new Date();
+        ArrayList<Task> temp = tasks;
+        for(int i=0;i<temp.size();i++){
+            if(temp.get(i).getDueDate().before(currentDate)){
+                tasks.remove(temp.get(i));
+            }
+        }
+
+    }
 
     public ArrayList<Integer> getPriorities(){
         return priorities;

@@ -61,6 +61,7 @@ public class PlannerView extends JFrame {
 
     public void taskAddBar(){
         JPanel taskBar = new JPanel();
+        taskBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         JButton newTask = new JButton("New Task");
         newTask.setFocusPainted(false);
         JButton removeTaskButton = new JButton("Remove Selected Task");
@@ -69,10 +70,13 @@ public class PlannerView extends JFrame {
         //Submit Task button
         JButton submitTask = new JButton("Submit Task");
         submitTask.setFocusPainted(false);
+        JButton removeOldTasks = new JButton("Remove Old Tasks");
+        removeOldTasks.setFocusPainted(false);
 
-
-        taskBar.add(newTask);
         taskBar.add(removeTaskButton);
+        taskBar.add(removeOldTasks);
+        taskBar.add(Box.createRigidArea(new Dimension(40,0)));
+        taskBar.add(newTask);
         taskBar.add(submitTask);
         this.add(taskBar, BorderLayout.PAGE_START);
         //Adding Action Listener for new task JButton
@@ -87,10 +91,15 @@ public class PlannerView extends JFrame {
         submitTask.addActionListener(pbc);
         submitTask.setActionCommand("submit");
 
+        //Remove old tasks
+        removeOldTasks.addActionListener(pbc);
+        removeOldTasks.setActionCommand("removeOldTasks");
+
         //Design
         newTask.setBackground(Color.WHITE);
         removeTaskButton.setBackground(Color.WHITE);
         submitTask.setBackground(Color.WHITE);
+        removeOldTasks.setBackground(Color.WHITE);
 
     }
 
@@ -310,6 +319,14 @@ public class PlannerView extends JFrame {
             plannerModel.removeTask(task);
         }
 
+    }
+    public void removeOldTasks(){
+        Date currentDate = new Date();
+        for(int i=0;i<modelTasks.size();i++){
+            if(modelTasks.getElementAt(i).getDueDate().before(currentDate)){
+                modelTasks.remove(i);
+            }
+        }
     }
 
     public void removeAllTasks(){

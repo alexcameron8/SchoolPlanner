@@ -85,6 +85,10 @@ public class PlannerController implements ActionListener, ListSelectionListener 
                 JOptionPane.showMessageDialog(null,"This file cannot be read or imported.");
             }
         }
+        else if(e.getActionCommand().equals("removeOldTasks")){
+            plannerModel.removeOldTasks(plannerModel.getTasks());
+            plannerView.removeOldTasks();
+        }
     }
 
     @Override
