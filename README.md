@@ -5,7 +5,7 @@ This application is designed to help manage course assignments, tests, labs and 
 Navigate the executable jar file and download and open to run the application. 
 
 ## About SchoolPlanner
-
+![img](Resources/)
 
 ## Future Implementation Ideas
 - Have the program automatically clear old tasks using ScheduledExecutorService API
