@@ -10,9 +10,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+
 
 /**
  * @Author: Alex Cameron
@@ -62,6 +61,11 @@ public class PlannerModel {
         }
         return s;
     }
+
+    /**
+     * For testing purposes
+     * @param filename file being saved
+     */
     public void export(String filename){
         try{
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename));
@@ -71,6 +75,11 @@ public class PlannerModel {
             e.printStackTrace();
         }
     }
+
+    /**
+     * For testing purposes
+     * @param fileName file being loaded/opened
+     */
     public void importFile(String fileName){
         try{
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
@@ -159,7 +168,43 @@ public class PlannerModel {
                 tasks.remove(temp.get(i));
             }
         }
+    }
 
+    public void generateBulletList(String fileName) throws IOException {
+        Task temp = null;
+        ArrayList<Task> taskList = tasks;
+        ArrayList<Task> tempList;
+        String s ="List of Tasks:\n";
+        while(taskList.size()>0){
+            temp = lowestDate(tasks); //returns task with most recent due date
+            tempList = sameDate(taskList,temp.getDueDate());
+            s+= printTasks(tempList);
+            taskList.removeAll(tempList);
+        }
+
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+        bufferedWriter.write(s);
+        bufferedWriter.close();
+    }
+
+    public String printTasks(ArrayList<Task> tempList){
+        String s ="";
+        for(Task task : tempList){ //high priority
+            if(task.getPriority()==3){
+                s += "- " + task.getCourse() +" ["+task.getPriority() +"]: " + task.getTaskName() + " Due: " + task.dateFormatted() + "\n";
+            }
+        }
+        for(Task task : tempList){ //medium priority
+            if(task.getPriority()==2){
+                s += "- " + task.getCourse() +" ["+task.getPriority() +"]: " + task.getTaskName() + " Due: " + task.dateFormatted() + "\n";
+            }
+        }
+        for(Task task : tempList){ //low priority
+            if(task.getPriority()==1){
+                s += "- " + task.getCourse() +" ["+task.getPriority() +"]: "+ task.getTaskName() + " Due: " + task.dateFormatted() + "\n";
+            }
+        }
+        return s;
     }
 
     public ArrayList<Integer> getPriorities(){

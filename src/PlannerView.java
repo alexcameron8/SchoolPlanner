@@ -62,22 +62,25 @@ public class PlannerView extends JFrame {
     public void taskAddBar(){
         JPanel taskBar = new JPanel();
         taskBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+
         JButton newTask = new JButton("New Task");
         newTask.setFocusPainted(false);
+        //Remove Button
         JButton removeTaskButton = new JButton("Remove Selected Task");
         removeTaskButton.setFocusPainted(false);
         removeTaskButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
-        //Submit Task button
-        JButton submitTask = new JButton("Submit Task");
-        submitTask.setFocusPainted(false);
         JButton removeOldTasks = new JButton("Remove Old Tasks");
         removeOldTasks.setFocusPainted(false);
 
-        taskBar.add(removeTaskButton);
+        JButton generateList = new JButton("Generate List");
+        generateList.setFocusPainted(false);
+
         taskBar.add(removeOldTasks);
+        taskBar.add(removeTaskButton);
         taskBar.add(Box.createRigidArea(new Dimension(40,0)));
         taskBar.add(newTask);
-        taskBar.add(submitTask);
+        taskBar.add(generateList);
+
         this.add(taskBar, BorderLayout.PAGE_START);
         //Adding Action Listener for new task JButton
         newTask.addActionListener(pbc);
@@ -87,19 +90,19 @@ public class PlannerView extends JFrame {
         removeTaskButton.addActionListener(pbc);
         removeTaskButton.setActionCommand("removeTask");
 
-        //Submit JButton
-        submitTask.addActionListener(pbc);
-        submitTask.setActionCommand("submit");
-
         //Remove old tasks
         removeOldTasks.addActionListener(pbc);
         removeOldTasks.setActionCommand("removeOldTasks");
 
+        //generate list
+        generateList.addActionListener(pbc);
+        generateList.setActionCommand("generateList");
+
         //Design
         newTask.setBackground(Color.WHITE);
         removeTaskButton.setBackground(Color.WHITE);
-        submitTask.setBackground(Color.WHITE);
         removeOldTasks.setBackground(Color.WHITE);
+        generateList.setBackground(Color.WHITE);
 
     }
 
@@ -124,6 +127,9 @@ public class PlannerView extends JFrame {
         coursePanel.add(selectCourse);
         coursePanel.add(courses);
 
+        //Submit Task button
+        JButton submitTask = new JButton("Submit Task");
+        submitTask.setFocusPainted(false);
 
         //priority setup
         JPanel priorityPanel = new JPanel();
@@ -164,9 +170,16 @@ public class PlannerView extends JFrame {
         taskPanel.add(Box.createRigidArea(new Dimension(10,10)));
         taskPanel.add(dueDatePanel);
         taskPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        taskPanel.add(submitTask);
+        taskPanel.add(Box.createRigidArea(new Dimension(0,10)));
         centerPanel.add(Box.createHorizontalStrut(10));
         centerPanel.add(taskPanel);
         this.add(centerPanel);
+
+        //ActionListeners
+        //Submit JButton
+        submitTask.addActionListener(pbc);
+        submitTask.setActionCommand("submit");
 
         //Design
         Border border = BorderFactory.createEtchedBorder(1);
@@ -180,6 +193,8 @@ public class PlannerView extends JFrame {
 
         //coursePanel
         coursePanel.setBorder(border);
+
+        submitTask.setBackground(Color.WHITE);
 
         //name & description field
         nameField.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5, 5, 5, 5)));

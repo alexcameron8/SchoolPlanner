@@ -23,19 +23,19 @@ public class PlannerController implements ActionListener, ListSelectionListener 
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("submit")){
+        if (e.getActionCommand().equals("submit")) {
             try {
-                if((Date) plannerView.getDate()==null) {
+                if ((Date) plannerView.getDate() == null) {
                     JOptionPane.showMessageDialog(null, "Invalid Entry: Date Error");
-                }else if(plannerView.getTaskName()==null || plannerView.getTaskName().equals("")){
+                } else if (plannerView.getTaskName() == null || plannerView.getTaskName().equals("")) {
                     JOptionPane.showMessageDialog(null, "Invalid Entry: No Task Name");
-                }else if(plannerView.getCourse()== null){
+                } else if (plannerView.getCourse() == null) {
                     JOptionPane.showMessageDialog(null, "Invalid Entry: No Course Name");
-                }else if(plannerView.getPriority()<0 || plannerView.getPriority()>3){
+                } else if (plannerView.getPriority() < 0 || plannerView.getPriority() > 3) {
                     JOptionPane.showMessageDialog(null, "Invalid Entry: No Priority Selected");
-                }else{
+                } else {
                     try {
-                        plannerView.addTask(plannerView.getTaskName(),plannerView.getDesc(),plannerView.getCourse(),plannerView.getDate(),plannerView.getPriority());
+                        plannerView.addTask(plannerView.getTaskName(), plannerView.getDesc(), plannerView.getCourse(), plannerView.getDate(), plannerView.getPriority());
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
                     }
@@ -45,49 +45,36 @@ public class PlannerController implements ActionListener, ListSelectionListener 
             } catch (ParseException parseException) {
                 parseException.printStackTrace();
             }
-        }
-        else if(e.getActionCommand().equals("newTask")){
+        } else if (e.getActionCommand().equals("newTask")) {
             plannerView.setupFields();
-        }
-        else if(e.getActionCommand().equals("removeTask")){
+        } else if (e.getActionCommand().equals("removeTask")) {
             plannerView.removeTask();
-        }
-        else if(e.getActionCommand().equals("export")){
-            String fileName = JOptionPane.showInputDialog(null, "Enter file name to export: ");
-            plannerModel.export(fileName);
-        }
-        else if(e.getActionCommand().equals("import")){
-            String fileName = JOptionPane.showInputDialog(null, "Enter file name to import: ");
-            plannerModel.importFile(fileName);
-            plannerView.removeAllTasks();
-            plannerView.addAllTasks();
-        }
-        else if(e.getActionCommand().equals("deleteFile")){
-            String fileName = JOptionPane.showInputDialog(null, "Enter file name to export file: ");
-            if(new File(fileName).delete()){
-                JOptionPane.showMessageDialog(null, "File '" + fileName + "' deleted");
-            }
-        }
-        else if(e.getActionCommand().equals("exportList")){
+        } else if (e.getActionCommand().equals("exportList")) {
             String fileName = JOptionPane.showInputDialog(null, "Enter file name to export: ");
             try {
                 plannerModel.exportList(fileName);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-        }
-        else if(e.getActionCommand().equals("importList")){
-            String fileName = JOptionPane.showInputDialog(null, "Enter file name to import: ");
-            try {
-                plannerModel.importList(fileName);
-                plannerView.addAllTasks();
-            } catch (ParserConfigurationException | IOException | SAXException | ParseException parserConfigurationException) {
-                JOptionPane.showMessageDialog(null,"This file cannot be read or imported.");
-            }
-        }
-        else if(e.getActionCommand().equals("removeOldTasks")){
+        } else if (e.getActionCommand().equals("removeOldTasks")) {
             plannerModel.removeOldTasks(plannerModel.getTasks());
             plannerView.removeOldTasks();
+        } else if (e.getActionCommand().equals("generateList")) {
+            String fileName = JOptionPane.showInputDialog(null, "Enter file name of List: ");
+            try {
+                plannerModel.generateBulletList(fileName);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } else if (e.getSource() instanceof JFileChooser && e.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
+            JFileChooser source = (JFileChooser) e.getSource();
+            try {
+                plannerModel.importList(source.getSelectedFile().getAbsolutePath());
+            } catch (ParserConfigurationException | IOException | ParseException | SAXException parserConfigurationException) {
+                parserConfigurationException.printStackTrace();
+            }
+            plannerView.removeAllTasks();
+            plannerView.addAllTasks();
         }
     }
 
