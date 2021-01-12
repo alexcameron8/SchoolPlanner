@@ -12,10 +12,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-
-/**
- * @Author: Alex Cameron
- */
 public class PlannerModel {
 
     private ArrayList<Integer> priorities;
@@ -37,7 +33,6 @@ public class PlannerModel {
         courses.add("SYSC3120");
         courses.add("SYSC4106");
         courses.add("Other");
-
     }
     public void addPriority(){
         priorities.add(3); //highest
