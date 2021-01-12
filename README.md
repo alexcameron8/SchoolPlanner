@@ -1,5 +1,8 @@
 # SchoolPlanner
-This application built to help manage course assignments, tests, labs and homework tailored for a students specific semester. 
+This application is designed to help manage course assignments, tests, labs and homework tailored for a students specific semester.
+
+## About SchoolPlanner
+
 
 ## Future Implementation Ideas
 - Have the program automatically clear old tasks using ScheduledExecutorService API
