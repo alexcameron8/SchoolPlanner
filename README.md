@@ -1,6 +1,9 @@
 # SchoolPlanner
 This application is designed to help manage course assignments, tests, labs and homework tailored for a students specific semester.
 
+## How to Run SchoolPlanner
+Navigate the executable jar file and download and open to run the application. 
+
 ## About SchoolPlanner
 
 
